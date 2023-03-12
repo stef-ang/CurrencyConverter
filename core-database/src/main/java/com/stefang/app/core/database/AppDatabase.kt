@@ -18,8 +18,21 @@ package com.stefang.app.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.stefang.app.core.database.dao.CurrencyDao
+import com.stefang.app.core.database.dao.ExchangeRatesDao
+import com.stefang.app.core.database.entity.CurrencyDbModel
+import com.stefang.app.core.database.entity.ExchangeRatesBdModel
 
-@Database(entities = [DataItemType::class], version = 1)
+@Database(
+    entities = [
+        DataItemType::class,
+        CurrencyDbModel::class,
+        ExchangeRatesBdModel::class
+    ],
+    version = 1
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun dataItemTypeDao(): DataItemTypeDao
+    abstract fun currencyDao(): CurrencyDao
+    abstract fun exchangeRatesDao(): ExchangeRatesDao
 }

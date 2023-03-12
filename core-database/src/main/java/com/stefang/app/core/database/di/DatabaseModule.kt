@@ -25,14 +25,27 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import com.stefang.app.core.database.AppDatabase
 import com.stefang.app.core.database.DataItemTypeDao
+import com.stefang.app.core.database.dao.CurrencyDao
+import com.stefang.app.core.database.dao.ExchangeRatesDao
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
+
     @Provides
     fun provideDataItemTypeDao(appDatabase: AppDatabase): DataItemTypeDao {
         return appDatabase.dataItemTypeDao()
+    }
+
+    @Provides
+    fun provideCurrencyDao(appDatabase: AppDatabase): CurrencyDao {
+        return appDatabase.currencyDao()
+    }
+
+    @Provides
+    fun provideExchangeRatesDao(appDatabase: AppDatabase): ExchangeRatesDao {
+        return appDatabase.exchangeRatesDao()
     }
 
     @Provides
@@ -41,7 +54,11 @@ class DatabaseModule {
         return Room.databaseBuilder(
             appContext,
             AppDatabase::class.java,
-            "DataItemType"
+            DB_NAME
         ).build()
+    }
+
+    companion object {
+        private const val DB_NAME = "converter-currency-db"
     }
 }

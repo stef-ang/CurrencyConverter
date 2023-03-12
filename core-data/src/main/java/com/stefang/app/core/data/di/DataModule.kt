@@ -24,6 +24,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import com.stefang.app.core.data.DataItemTypeRepository
 import com.stefang.app.core.data.DefaultDataItemTypeRepository
+import com.stefang.app.core.data.datastore.ExchangeRateDataStore
+import com.stefang.app.core.data.datastore.ExchangeRateDataStoreImpl
+import com.stefang.app.core.data.date.TimeHelper
+import com.stefang.app.core.data.date.TimeHelperImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,6 +40,16 @@ interface DataModule {
     fun bindsDataItemTypeRepository(
         dataItemTypeRepository: DefaultDataItemTypeRepository
     ): DataItemTypeRepository
+
+    @Singleton
+    @Binds
+    fun bindsTimeTrackerDataStore(
+        timeTrackerDataStoreImpl: ExchangeRateDataStoreImpl
+    ): ExchangeRateDataStore
+
+    @Singleton
+    @Binds
+    fun bindsTimeHelper(timeHelper: TimeHelperImpl): TimeHelper
 }
 
 class FakeDataItemTypeRepository @Inject constructor() : DataItemTypeRepository {

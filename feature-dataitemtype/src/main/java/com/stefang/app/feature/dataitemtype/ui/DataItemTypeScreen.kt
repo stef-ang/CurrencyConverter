@@ -92,7 +92,6 @@ internal fun DataItemTypeScreen(
 }
 
 // Previews
-
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {

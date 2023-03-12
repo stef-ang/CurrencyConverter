@@ -28,11 +28,13 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Multimodule template"
+rootProject.name = "My Converter Currency"
 
 include(":app")
+include(":core-api")
 include(":core-data")
 include(":core-database")
 include(":core-testing")
 include(":core-ui")
 include(":feature-dataitemtype")
+include(":feature-currency")
