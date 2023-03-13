@@ -16,6 +16,8 @@
 
 package com.stefang.app.core.data.di
 
+import android.content.Context
+import com.stefang.app.core.data.CurrencyRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,10 +26,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import com.stefang.app.core.data.DataItemTypeRepository
 import com.stefang.app.core.data.DefaultDataItemTypeRepository
+import com.stefang.app.core.data.OfflineFirstCurrencyRepositoryImpl
 import com.stefang.app.core.data.datastore.ExchangeRateDataStore
 import com.stefang.app.core.data.datastore.ExchangeRateDataStoreImpl
 import com.stefang.app.core.data.date.TimeHelper
 import com.stefang.app.core.data.date.TimeHelperImpl
+import dagger.Provides
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,13 +48,22 @@ interface DataModule {
 
     @Singleton
     @Binds
-    fun bindsTimeTrackerDataStore(
-        timeTrackerDataStoreImpl: ExchangeRateDataStoreImpl
-    ): ExchangeRateDataStore
+    fun bindsCurrencyRepository(
+        currencyRepository: OfflineFirstCurrencyRepositoryImpl
+    ): CurrencyRepository
 
     @Singleton
     @Binds
     fun bindsTimeHelper(timeHelper: TimeHelperImpl): TimeHelper
+
+    companion object {
+
+        @Singleton
+        @Provides
+        fun provideExchangeRateDataStore(@ApplicationContext appContext: Context): ExchangeRateDataStore {
+            return ExchangeRateDataStoreImpl(appContext)
+        }
+    }
 }
 
 class FakeDataItemTypeRepository @Inject constructor() : DataItemTypeRepository {

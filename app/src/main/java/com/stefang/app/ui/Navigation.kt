@@ -16,21 +16,19 @@
 
 package com.stefang.app.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.stefang.app.feature.dataitemtype.ui.DataItemTypeScreen
+import com.stefang.app.R
+import com.stefang.app.feature.currency.ui.CurrencyConverterRoute
 
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "main") {
-        composable("main") { DataItemTypeScreen(modifier = Modifier.padding(16.dp)) }
-        // TODO: Add more destinations
+        composable("main") { CurrencyConverterRoute(title = stringResource(R.string.app_name)) }
     }
 }
