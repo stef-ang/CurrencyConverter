@@ -21,10 +21,10 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,6 +46,7 @@ import com.stefang.app.core.ui.component.AutoCompleteBox
 import com.stefang.app.core.ui.component.ScaffoldScreen
 import com.stefang.app.core.ui.component.TextSearchBar
 import com.stefang.app.feature.currency.CurrencyConverterViewModel
+import com.stefang.app.feature.currency.R
 import com.stefang.app.feature.currency.compose.ContainerExchangeResult
 import com.stefang.app.feature.currency.model.CurrencyUiModel
 import com.stefang.app.feature.currency.model.ExchangeResultUiModel
@@ -58,8 +60,23 @@ fun CurrencyConverterRoute(
     val currenciesState by viewModel.allCurrencies.collectAsStateWithLifecycle()
     val exchangeResultsState by viewModel.allExchangeResults.collectAsStateWithLifecycle()
 
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    val snackBarMessage = stringResource(R.string.offline_mode_info)
+    LaunchedEffect(Unit) {
+        viewModel.snackBarEvent.collect {
+            if (it == CurrencyConverterViewModel.SnackBarEvent.NetworkError) {
+                snackBarHostState.showSnackbar(
+                    message = snackBarMessage,
+                    duration = SnackbarDuration.Long,
+                )
+            }
+        }
+    }
+
     CurrencyConverterScreen(
         title = title,
+        snackBarHostState = snackBarHostState,
         currencies = currenciesState,
         exchangeResults = exchangeResultsState,
         onAmountUpdated = viewModel::updateAmount,
@@ -72,6 +89,7 @@ fun CurrencyConverterRoute(
 @Composable
 fun CurrencyConverterScreen(
     title: String,
+    snackBarHostState: SnackbarHostState?,
     currencies: List<CurrencyUiModel>,
     exchangeResults: List<ExchangeResultUiModel>,
     onAmountUpdated: (String) -> Unit,
@@ -80,6 +98,7 @@ fun CurrencyConverterScreen(
 ) {
     ScaffoldScreen(
         title = title,
+        snackBarHostState = snackBarHostState,
         content = {
             Column(modifier = modifier.padding(start = 16.dp, top = it.calculateTopPadding(), end = 16.dp)) {
                 TextFieldAmount(onAmountUpdated)
@@ -201,6 +220,7 @@ private fun DefaultPreview() {
     MyApplicationTheme {
         CurrencyConverterScreen(
             title = "Currency Converter",
+            snackBarHostState = null,
             currencies = emptyList(),
             exchangeResults = listOf(
                 ExchangeResultUiModel("ABC", "1.0"),

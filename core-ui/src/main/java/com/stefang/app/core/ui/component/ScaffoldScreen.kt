@@ -7,6 +7,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.text.font.FontWeight
 import com.stefang.app.core.ui.DeepPurple500
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ import com.stefang.app.core.ui.MyApplicationTheme
 fun ScaffoldScreen(
     modifier: Modifier = Modifier,
     title: String,
+    snackBarHostState: SnackbarHostState? = null,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
@@ -30,6 +33,9 @@ fun ScaffoldScreen(
                     color = DeepPurple500
                 )
             })
+        },
+        snackbarHost = {
+            snackBarHostState?.let { SnackbarHost(it) }
         },
         content = content
     )
