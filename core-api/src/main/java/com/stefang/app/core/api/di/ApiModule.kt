@@ -41,7 +41,7 @@ interface ApiModule {
 
         @Provides
         @Singleton
-        fun provideRetrofit(okhttpCallFactory: Call.Factory) = Retrofit.Builder()
+        fun provideRetrofit(okhttpCallFactory: Call.Factory): Retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .callFactory(okhttpCallFactory)
             .addConverterFactory(GsonConverterFactory.create())

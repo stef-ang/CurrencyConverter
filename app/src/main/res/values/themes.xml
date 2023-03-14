@@ -17,5 +17,5 @@
 
 <resources>
 
-    <style name="Theme.MyConvCurrency" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.MyCurrencyConverter" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

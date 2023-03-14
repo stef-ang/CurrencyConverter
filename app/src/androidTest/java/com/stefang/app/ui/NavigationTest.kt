@@ -17,12 +17,9 @@
 package com.stefang.app.ui
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
-import org.junit.Test
-import com.stefang.app.core.data.di.fakeDataItemTypes
 
 @HiltAndroidTest
 class NavigationTest {
@@ -33,10 +30,5 @@ class NavigationTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @Test
-    fun test1() {
-        // TODO: Add navigation tests
-        composeTestRule.onNodeWithText(fakeDataItemTypes.first(), substring = true).assertExists()
-    }
 }
 

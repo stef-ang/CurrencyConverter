@@ -16,13 +16,10 @@
 
 package com.stefang.app.testdi
 
-import dagger.Binds
+import com.stefang.app.core.data.di.DataModule
 import dagger.Module
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import com.stefang.app.core.data.DataItemTypeRepository
-import com.stefang.app.core.data.di.DataModule
-import com.stefang.app.core.data.di.FakeDataItemTypeRepository
 
 @Module
 @TestInstallIn(
@@ -30,9 +27,5 @@ import com.stefang.app.core.data.di.FakeDataItemTypeRepository
     replaces = [DataModule::class]
 )
 interface FakeDataModule {
-
-    @Binds
-    abstract fun bindRepository(
-        fakeRepository: FakeDataItemTypeRepository
-    ): DataItemTypeRepository
+    // todo provide fake data module here
 }

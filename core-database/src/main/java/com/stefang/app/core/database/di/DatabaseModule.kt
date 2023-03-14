@@ -18,25 +18,19 @@ package com.stefang.app.core.database.di
 
 import android.content.Context
 import androidx.room.Room
+import com.stefang.app.core.database.AppDatabase
+import com.stefang.app.core.database.dao.CurrencyDao
+import com.stefang.app.core.database.dao.ExchangeRatesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import com.stefang.app.core.database.AppDatabase
-import com.stefang.app.core.database.DataItemTypeDao
-import com.stefang.app.core.database.dao.CurrencyDao
-import com.stefang.app.core.database.dao.ExchangeRatesDao
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
-
-    @Provides
-    fun provideDataItemTypeDao(appDatabase: AppDatabase): DataItemTypeDao {
-        return appDatabase.dataItemTypeDao()
-    }
 
     @Provides
     fun provideCurrencyDao(appDatabase: AppDatabase): CurrencyDao {

@@ -18,14 +18,6 @@ package com.stefang.app.core.data.di
 
 import android.content.Context
 import com.stefang.app.core.data.CurrencyRepository
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import com.stefang.app.core.data.DataItemTypeRepository
-import com.stefang.app.core.data.DefaultDataItemTypeRepository
 import com.stefang.app.core.data.OfflineFirstCurrencyRepositoryImpl
 import com.stefang.app.core.data.datastore.ExchangeRateDataStore
 import com.stefang.app.core.data.datastore.ExchangeRateDataStoreImpl
@@ -33,20 +25,17 @@ import com.stefang.app.core.data.date.TimeHelper
 import com.stefang.app.core.data.date.TimeHelperImpl
 import com.stefang.app.core.data.log.Logger
 import com.stefang.app.core.data.log.LoggerImpl
+import dagger.Binds
+import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface DataModule {
-
-    @Singleton
-    @Binds
-    fun bindsDataItemTypeRepository(
-        dataItemTypeRepository: DefaultDataItemTypeRepository
-    ): DataItemTypeRepository
 
     @Singleton
     @Binds
@@ -71,13 +60,3 @@ interface DataModule {
         }
     }
 }
-
-class FakeDataItemTypeRepository @Inject constructor() : DataItemTypeRepository {
-    override val dataItemTypes: Flow<List<String>> = flowOf(fakeDataItemTypes)
-
-    override suspend fun add(name: String) {
-        throw NotImplementedError()
-    }
-}
-
-val fakeDataItemTypes = listOf("One", "Two", "Three")
