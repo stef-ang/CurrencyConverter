@@ -14,7 +14,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -41,7 +40,7 @@ class OfflineFirstCurrencyRepositoryImpl @Inject constructor(
         }
 
     private suspend fun isLocalDataNotValid(): Boolean {
-        return dataStore.lastUpdate.firstOrNull()?.let { lastUpdate ->
+        return dataStore.lastUpdate.first()?.let { lastUpdate ->
             timeHelper.currentTimeMillis - lastUpdate >= CACHE_LIMIT_DURATION
         } ?: true
     }
