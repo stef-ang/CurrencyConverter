@@ -17,8 +17,10 @@ class GetAllExchangeResultsUseCase @Inject constructor(
         return currencyRepository.exchangeRates.map { rates ->
             rates.firstOrNull { it.code == source }?.let { sourceCurrency ->
                 val rateSource = sourceCurrency.rate
+                // convert from source to base
                 val inBase = amount / rateSource
                 rates.map {
+                    // convert from base to all currencies
                     val rateResult = it.rate * inBase
                     ExchangeResultUiModel(
                         code = it.code,

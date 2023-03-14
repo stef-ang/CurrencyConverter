@@ -1,9 +1,9 @@
 package com.stefang.app.feature.currency
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stefang.app.core.data.CurrencyRepository
+import com.stefang.app.core.data.log.Logger
 import com.stefang.app.feature.currency.model.CurrencyUiModel
 import com.stefang.app.feature.currency.model.ExchangeResultUiModel
 import com.stefang.app.feature.currency.usecase.GetAllCurrenciesUseCase
@@ -27,7 +27,8 @@ import javax.inject.Inject
 class CurrencyConverterViewModel @Inject constructor(
     currencyRepository: CurrencyRepository,
     getAllCurrenciesUseCase: GetAllCurrenciesUseCase,
-    getAllExchangeResultsUseCase: GetAllExchangeResultsUseCase
+    getAllExchangeResultsUseCase: GetAllExchangeResultsUseCase,
+    logger: Logger
 ) : ViewModel() {
 
     private val amountFlow = MutableStateFlow(0.0)
@@ -42,12 +43,13 @@ class CurrencyConverterViewModel @Inject constructor(
                 currencyRepository.tryUpdateCurrenciesAndRates()
             } catch (e: Exception) {
                 snackBarEventSharedFlow.emit(SnackBarEvent.NetworkError)
-                Log.e("CurrencyConverter", ": ${e.message}")
+                logger.error(e)
             }
         }
     }
 
     val allCurrencies: StateFlow<List<CurrencyUiModel>> = getAllCurrenciesUseCase().catch {
+        snackBarEventSharedFlow.emit(SnackBarEvent.ComputationError)
         emit(emptyList())
     }.stateIn(
         scope = viewModelScope,
@@ -62,9 +64,9 @@ class CurrencyConverterViewModel @Inject constructor(
         }.filter {
             it.first != null && it.second > 0.0
         }.flatMapLatest {
-            Log.d("allExchangeResults", "flatMapLatest $it")
             getAllExchangeResultsUseCase(it.first, it.second)
         }.catch {
+            snackBarEventSharedFlow.emit(SnackBarEvent.ComputationError)
             emit(emptyList())
         }.stateIn(
             scope = viewModelScope,
@@ -80,8 +82,9 @@ class CurrencyConverterViewModel @Inject constructor(
         sourceCurrencyFlow.value = code
     }
 
-    sealed class SnackBarEvent {
-        object None : SnackBarEvent()
-        object NetworkError : SnackBarEvent()
+    sealed interface SnackBarEvent {
+        object None : SnackBarEvent
+        object NetworkError : SnackBarEvent
+        object ComputationError : SnackBarEvent
     }
 }

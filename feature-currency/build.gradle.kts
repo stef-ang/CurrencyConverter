@@ -43,6 +43,7 @@ dependencies {
 
     implementation(project(":core-data"))
     implementation(project(":core-ui"))
+    testImplementation(project(":core-testing"))
     androidTestImplementation(project(":core-testing"))
 
     // Core Android dependencies
@@ -77,6 +78,7 @@ dependencies {
     // Local tests: jUnit, coroutines, Android runner
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.cash.turbine)
 
     // Instrumented tests: jUnit rules and runners
     androidTestImplementation(libs.androidx.test.ext.junit)

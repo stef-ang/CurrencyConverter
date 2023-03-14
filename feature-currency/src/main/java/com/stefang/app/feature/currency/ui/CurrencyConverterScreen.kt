@@ -2,7 +2,6 @@
 
 package com.stefang.app.feature.currency.ui
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +45,7 @@ import com.stefang.app.core.ui.component.AutoCompleteBox
 import com.stefang.app.core.ui.component.ScaffoldScreen
 import com.stefang.app.core.ui.component.TextSearchBar
 import com.stefang.app.feature.currency.CurrencyConverterViewModel
+import com.stefang.app.feature.currency.CurrencyConverterViewModel.SnackBarEvent
 import com.stefang.app.feature.currency.R
 import com.stefang.app.feature.currency.compose.ContainerExchangeResult
 import com.stefang.app.feature.currency.model.CurrencyUiModel
@@ -62,12 +62,18 @@ fun CurrencyConverterRoute(
 
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val snackBarMessage = stringResource(R.string.offline_mode_info)
+    val offlineMessage = stringResource(R.string.offline_mode_info)
+    val internalErrorMessage = stringResource(R.string.internal_error_info)
     LaunchedEffect(Unit) {
         viewModel.snackBarEvent.collect {
-            if (it == CurrencyConverterViewModel.SnackBarEvent.NetworkError) {
+            val snackBarMessage = when (it) {
+                SnackBarEvent.NetworkError -> offlineMessage
+                SnackBarEvent.ComputationError -> internalErrorMessage
+                else -> ""
+            }
+            if (snackBarMessage.isNotEmpty()) {
                 snackBarHostState.showSnackbar(
-                    message = snackBarMessage,
+                    message = offlineMessage,
                     duration = SnackbarDuration.Long,
                 )
             }
@@ -85,7 +91,6 @@ fun CurrencyConverterRoute(
     )
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CurrencyConverterScreen(
     title: String,
@@ -200,9 +205,11 @@ private fun GridExchangeResults(
     results: List<ExchangeResultUiModel>
 ) {
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
         columns = GridCells.Fixed(3),
-        contentPadding = PaddingValues(top = 8.dp),
+        contentPadding = PaddingValues(vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

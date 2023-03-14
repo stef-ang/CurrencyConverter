@@ -31,6 +31,8 @@ import com.stefang.app.core.data.datastore.ExchangeRateDataStore
 import com.stefang.app.core.data.datastore.ExchangeRateDataStoreImpl
 import com.stefang.app.core.data.date.TimeHelper
 import com.stefang.app.core.data.date.TimeHelperImpl
+import com.stefang.app.core.data.log.Logger
+import com.stefang.app.core.data.log.LoggerImpl
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -55,6 +57,10 @@ interface DataModule {
     @Singleton
     @Binds
     fun bindsTimeHelper(timeHelper: TimeHelperImpl): TimeHelper
+
+    @Singleton
+    @Binds
+    fun bindsLogger(logger: LoggerImpl): Logger
 
     companion object {
 

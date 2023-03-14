@@ -35,6 +35,11 @@ android {
 
 dependencies {
 
+    implementation(project(":core-data"))
+    implementation(project(":core-api"))
+    implementation(project(":core-database"))
+
     implementation(libs.androidx.test.runner)
     implementation(libs.hilt.android.testing)
+    implementation(libs.kotlinx.coroutines.test)
 }

@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation(project(":core-api"))
     implementation(project(":core-database"))
+    testImplementation(project(":core-testing"))
 
     // Arch Components
     implementation(libs.androidx.datastore)
