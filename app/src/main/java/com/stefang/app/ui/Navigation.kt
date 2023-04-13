@@ -18,17 +18,40 @@ package com.stefang.app.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stefang.app.R
 import com.stefang.app.feature.currency.ui.CurrencyConverterRoute
+import com.stefang.app.feature.currency.ui.HistoryConversionRoute
 
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "main") {
-        composable("main") { CurrencyConverterRoute(title = stringResource(R.string.app_name)) }
+        composable("main") {
+            CurrencyConverterRoute(
+                title = stringResource(R.string.app_name),
+                onClickOpenHistory = {
+                    navController.navigateSingleTopTo("history")
+                }
+            )
+        }
+        composable("history") { HistoryConversionRoute() }
+    }
+}
+
+fun NavHostController.navigateSingleTopTo(route: String) {
+    this.navigate(route) {
+//        popUpTo(
+//            this@navigateSingleTopTo.graph.findStartDestination().id
+//        ) {
+//            saveState = true
+//        }
+        // Avoid multiple copies of the same destination when
+        // re-selecting the same item
+        launchSingleTop = true
     }
 }

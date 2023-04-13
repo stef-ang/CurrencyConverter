@@ -4,13 +4,14 @@ import app.cash.turbine.test
 import com.stefang.app.core.testing.logger.TestLogger
 import com.stefang.app.core.testing.repository.TestCurrencyRepository
 import com.stefang.app.core.testing.util.MainDispatcherRule
-import com.stefang.app.feature.currency.CurrencyConverterViewModel.SnackBarEvent
+import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel.SnackBarEvent
 import com.stefang.app.feature.currency.usecase.GetAllCurrenciesUseCase
 import com.stefang.app.feature.currency.usecase.GetAllExchangeResultsUseCase
 import com.stefang.app.feature.currency.usecase.currenciesExpected
 import com.stefang.app.feature.currency.usecase.currenciesInput
 import com.stefang.app.feature.currency.usecase.ratesExpected
 import com.stefang.app.feature.currency.usecase.ratesInput
+import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

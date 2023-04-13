@@ -1,4 +1,4 @@
-package com.stefang.app.feature.currency
+package com.stefang.app.feature.currency.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -83,7 +83,6 @@ class CurrencyConverterViewModel @Inject constructor(
     }
 
     sealed interface SnackBarEvent {
-        object None : SnackBarEvent
         object NetworkError : SnackBarEvent
         object ComputationError : SnackBarEvent
     }

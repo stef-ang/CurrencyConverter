@@ -3,6 +3,7 @@
 package com.stefang.app.feature.currency.ui
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,27 +35,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stefang.app.core.ui.DeepPurple500
 import com.stefang.app.core.ui.MyApplicationTheme
 import com.stefang.app.core.ui.component.AutoCompleteBox
 import com.stefang.app.core.ui.component.ScaffoldScreen
 import com.stefang.app.core.ui.component.TextSearchBar
-import com.stefang.app.feature.currency.CurrencyConverterViewModel
-import com.stefang.app.feature.currency.CurrencyConverterViewModel.SnackBarEvent
 import com.stefang.app.feature.currency.R
+import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel
+import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel.SnackBarEvent
 import com.stefang.app.feature.currency.compose.ContainerExchangeResult
 import com.stefang.app.feature.currency.model.CurrencyUiModel
 import com.stefang.app.feature.currency.model.ExchangeResultUiModel
+import com.stefang.app.core.ui.R as RUi
 
 @Composable
 fun CurrencyConverterRoute(
     modifier: Modifier = Modifier,
     title: String,
+    onClickOpenHistory: () -> Unit,
     viewModel: CurrencyConverterViewModel = hiltViewModel()
 ) {
     val currenciesState by viewModel.allCurrencies.collectAsStateWithLifecycle()
@@ -69,7 +74,6 @@ fun CurrencyConverterRoute(
             val snackBarMessage = when (it) {
                 SnackBarEvent.NetworkError -> offlineMessage
                 SnackBarEvent.ComputationError -> internalErrorMessage
-                else -> ""
             }
             if (snackBarMessage.isNotEmpty()) {
                 snackBarHostState.showSnackbar(
@@ -82,6 +86,7 @@ fun CurrencyConverterRoute(
 
     CurrencyConverterScreen(
         title = title,
+        onClickOpenHistory = onClickOpenHistory,
         snackBarHostState = snackBarHostState,
         currencies = currenciesState,
         exchangeResults = exchangeResultsState,
@@ -94,6 +99,7 @@ fun CurrencyConverterRoute(
 @Composable
 fun CurrencyConverterScreen(
     title: String,
+    onClickOpenHistory: () -> Unit,
     snackBarHostState: SnackbarHostState?,
     currencies: List<CurrencyUiModel>,
     exchangeResults: List<ExchangeResultUiModel>,
@@ -103,6 +109,14 @@ fun CurrencyConverterScreen(
 ) {
     ScaffoldScreen(
         title = title,
+        actions = {
+            Icon(
+                painter = painterResource(id = RUi.drawable.ic_history),
+                contentDescription = "history",
+                tint = DeepPurple500,
+                modifier = Modifier.clickable { onClickOpenHistory }
+            )
+        },
         snackBarHostState = snackBarHostState,
         content = {
             Column(modifier = modifier.padding(start = 16.dp, top = it.calculateTopPadding(), end = 16.dp)) {
@@ -227,6 +241,7 @@ private fun DefaultPreview() {
     MyApplicationTheme {
         CurrencyConverterScreen(
             title = "Currency Converter",
+            onClickOpenHistory = {},
             snackBarHostState = null,
             currencies = emptyList(),
             exchangeResults = listOf(
