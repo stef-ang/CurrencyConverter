@@ -3,13 +3,11 @@
 package com.stefang.app.core.ui.component
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.ui.text.font.FontWeight
-import com.stefang.app.core.ui.DeepPurple500
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -18,7 +16,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.stefang.app.core.ui.DeepPurple500
 import com.stefang.app.core.ui.MyApplicationTheme
 import com.stefang.app.core.ui.R
 
@@ -41,7 +42,12 @@ fun ScaffoldScreen(
                         color = DeepPurple500
                     )
                 },
-                actions = actions
+                actions = {
+                    Row(
+                        modifier = Modifier.padding(start = 8.dp, end = 16.dp),
+                        content = actions
+                    )
+                }
             )
         },
         snackbarHost = {
@@ -58,13 +64,9 @@ private fun ScaffoldPreview() {
         ScaffoldScreen(
             title = "My Application",
             actions = {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.ic_history),
-//                    contentDescription = "history",
-//                )
                 Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = null
+                    painter = painterResource(id = R.drawable.ic_history),
+                    contentDescription = "history",
                 )
             },
             content = {}

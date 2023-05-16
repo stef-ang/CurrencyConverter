@@ -1,7 +1,9 @@
 package com.stefang.app.core.database.di
 
-import com.stefang.app.core.database.CurrencyLocalDataSource
-import com.stefang.app.core.database.CurrencyLocalDataSourceImpl
+import com.stefang.app.core.database.datasource.CurrencyLocalDataSource
+import com.stefang.app.core.database.datasource.CurrencyLocalDataSourceImpl
+import com.stefang.app.core.database.datasource.HistoryDataSource
+import com.stefang.app.core.database.datasource.HistoryDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,7 +14,10 @@ import dagger.hilt.components.SingletonComponent
 interface DataSourceModule {
 
     @Binds
-    fun provideCurrencyLocalDataSource(
+    fun bindsCurrencyLocalDataSource(
         currencyLocalDataSource: CurrencyLocalDataSourceImpl
     ): CurrencyLocalDataSource
+
+    @Binds
+    fun bindsHistoryDataSource(dataSource: HistoryDataSourceImpl): HistoryDataSource
 }

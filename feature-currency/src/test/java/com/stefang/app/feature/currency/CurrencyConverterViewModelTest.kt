@@ -3,7 +3,9 @@ package com.stefang.app.feature.currency
 import app.cash.turbine.test
 import com.stefang.app.core.testing.logger.TestLogger
 import com.stefang.app.core.testing.repository.TestCurrencyRepository
+import com.stefang.app.core.testing.repository.TestHistoryRepository
 import com.stefang.app.core.testing.util.MainDispatcherRule
+import com.stefang.app.feature.currency.model.CurrencyUiModel
 import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel.SnackBarEvent
 import com.stefang.app.feature.currency.usecase.GetAllCurrenciesUseCase
 import com.stefang.app.feature.currency.usecase.GetAllExchangeResultsUseCase
@@ -32,6 +34,7 @@ class CurrencyConverterViewModelTest {
     private val getAllCurrenciesUseCase = GetAllCurrenciesUseCase(currencyRepository)
     private val getAllExchangeResultsUseCase = GetAllExchangeResultsUseCase(currencyRepository)
     private val logger = TestLogger()
+    private val historyRepository = TestHistoryRepository()
 
     private lateinit var viewModel: CurrencyConverterViewModel
 
@@ -44,7 +47,8 @@ class CurrencyConverterViewModelTest {
             currencyRepository,
             getAllCurrenciesUseCase,
             getAllExchangeResultsUseCase,
-            logger
+            logger,
+            historyRepository
         )
     }
 
@@ -120,7 +124,7 @@ class CurrencyConverterViewModelTest {
         val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.allExchangeResults.collect() }
 
         currencyRepository.sendCurrencyRatesModel(ratesInput)
-        viewModel.updateSourceCurrency("USD")
+        viewModel.updateSourceCurrency(CurrencyUiModel("USD", "USD - usd"))
         viewModel.updateAmount("0")
 
         assertEquals(0, viewModel.allExchangeResults.value.size)
@@ -134,7 +138,7 @@ class CurrencyConverterViewModelTest {
         val collectJob = launch(UnconfinedTestDispatcher()) { viewModel.allExchangeResults.collect() }
 
         currencyRepository.sendCurrencyRatesModel(ratesInput)
-        viewModel.updateSourceCurrency("ABC")
+        viewModel.updateSourceCurrency(CurrencyUiModel("ABC", "ABC - abc"))
         viewModel.updateAmount("10000")
 
         val result = viewModel.allExchangeResults.value

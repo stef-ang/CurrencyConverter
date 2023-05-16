@@ -48,11 +48,11 @@ import com.stefang.app.core.ui.component.AutoCompleteBox
 import com.stefang.app.core.ui.component.ScaffoldScreen
 import com.stefang.app.core.ui.component.TextSearchBar
 import com.stefang.app.feature.currency.R
-import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel
-import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel.SnackBarEvent
 import com.stefang.app.feature.currency.compose.ContainerExchangeResult
 import com.stefang.app.feature.currency.model.CurrencyUiModel
 import com.stefang.app.feature.currency.model.ExchangeResultUiModel
+import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel
+import com.stefang.app.feature.currency.viewmodel.CurrencyConverterViewModel.SnackBarEvent
 import com.stefang.app.core.ui.R as RUi
 
 @Composable
@@ -64,6 +64,9 @@ fun CurrencyConverterRoute(
 ) {
     val currenciesState by viewModel.allCurrencies.collectAsStateWithLifecycle()
     val exchangeResultsState by viewModel.allExchangeResults.collectAsStateWithLifecycle()
+
+    val amountState by viewModel.amountState.collectAsStateWithLifecycle()
+    val sourceCurrencyState by viewModel.sourceCurrencyState.collectAsStateWithLifecycle()
 
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -84,10 +87,29 @@ fun CurrencyConverterRoute(
         }
     }
 
+    // first solution collecting sharedFlow
+    LaunchedEffect(Unit) {
+        viewModel.trackHistoryEvent.collect {
+            viewModel.trackHistory(it.first, it.second)
+        }
+    }
+
+    // region second solution collecting sharedFLow
+    // result: initial value got triggered [track WithoutJob =  - 0] and on navigate back from history screen got triggered.
+    // but why is it not working?
+//    val trackHistoryEvent by viewModel.trackHistoryEvent.collectAsStateWithLifecycle("" to 0)
+//    LaunchedEffect(trackHistoryEvent) {
+//        delay(2000)
+//        viewModel.trackHistoryWithoutJob(trackHistoryEvent.first, trackHistoryEvent.second)
+//    }
+    // endregion
+
     CurrencyConverterScreen(
         title = title,
         onClickOpenHistory = onClickOpenHistory,
         snackBarHostState = snackBarHostState,
+        currentAmount = amountState,
+        currentCurrency = sourceCurrencyState,
         currencies = currenciesState,
         exchangeResults = exchangeResultsState,
         onAmountUpdated = viewModel::updateAmount,
@@ -101,10 +123,12 @@ fun CurrencyConverterScreen(
     title: String,
     onClickOpenHistory: () -> Unit,
     snackBarHostState: SnackbarHostState?,
+    currentAmount: Int,
+    currentCurrency: CurrencyUiModel?,
     currencies: List<CurrencyUiModel>,
     exchangeResults: List<ExchangeResultUiModel>,
     onAmountUpdated: (String) -> Unit,
-    onCurrencyUpdated: (String) -> Unit,
+    onCurrencyUpdated: (CurrencyUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     ScaffoldScreen(
@@ -114,15 +138,15 @@ fun CurrencyConverterScreen(
                 painter = painterResource(id = RUi.drawable.ic_history),
                 contentDescription = "history",
                 tint = DeepPurple500,
-                modifier = Modifier.clickable { onClickOpenHistory }
+                modifier = Modifier.clickable(onClick = onClickOpenHistory)
             )
         },
         snackBarHostState = snackBarHostState,
         content = {
             Column(modifier = modifier.padding(start = 16.dp, top = it.calculateTopPadding(), end = 16.dp)) {
-                TextFieldAmount(onAmountUpdated)
+                TextFieldAmount(currentAmount, onAmountUpdated)
                 Spacer(modifier = Modifier.size(8.dp))
-                TextFieldDropdownCurrency(currencies, onCurrencyUpdated)
+                TextFieldDropdownCurrency(currentCurrency, currencies, onCurrencyUpdated)
                 GridExchangeResults(exchangeResults)
             }
         }
@@ -131,9 +155,12 @@ fun CurrencyConverterScreen(
 
 @Composable
 private fun TextFieldAmount(
+    currentAmount: Int,
     onAmountUpdated: (String) -> Unit
 ) {
-    var amountState by remember { mutableStateOf("") }
+    var amountState by remember {
+        mutableStateOf(if (currentAmount == 0) "" else currentAmount.toString())
+    }
     val keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
 
     LaunchedEffect(amountState) {
@@ -167,8 +194,9 @@ private fun TextFieldAmount(
 
 @Composable
 private fun TextFieldDropdownCurrency(
+    currentCurrency: CurrencyUiModel?,
     currencies: List<CurrencyUiModel>,
-    onCurrencyUpdated: (String) -> Unit
+    onCurrencyUpdated: (CurrencyUiModel) -> Unit
 ) {
     AutoCompleteBox(
         items = currencies,
@@ -181,11 +209,11 @@ private fun TextFieldDropdownCurrency(
             )
         }
     ) {
-        var value by remember { mutableStateOf("") }
+        var value by remember { mutableStateOf(currentCurrency?.text.orEmpty()) }
         val view = LocalView.current
 
         onItemSelected { currency ->
-            onCurrencyUpdated(currency.code)
+            onCurrencyUpdated(currency)
             value = currency.text
             filter(value)
             view.clearFocus()
@@ -243,6 +271,8 @@ private fun DefaultPreview() {
             title = "Currency Converter",
             onClickOpenHistory = {},
             snackBarHostState = null,
+            currentAmount = 0,
+            currentCurrency = null,
             currencies = emptyList(),
             exchangeResults = listOf(
                 ExchangeResultUiModel("ABC", "1.0"),

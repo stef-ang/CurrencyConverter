@@ -1,6 +1,6 @@
 package com.stefang.app.feature.currency.usecase
 
-import com.stefang.app.core.data.CurrencyRepository
+import com.stefang.app.core.data.repository.CurrencyRepository
 import com.stefang.app.feature.currency.model.CurrencyUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

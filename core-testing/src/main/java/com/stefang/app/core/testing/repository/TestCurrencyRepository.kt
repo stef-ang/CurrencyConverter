@@ -1,6 +1,6 @@
 package com.stefang.app.core.testing.repository
 
-import com.stefang.app.core.data.CurrencyRepository
+import com.stefang.app.core.data.repository.CurrencyRepository
 import com.stefang.app.core.data.model.CurrencyModel
 import com.stefang.app.core.data.model.CurrencyRateModel
 import kotlinx.coroutines.channels.BufferOverflow

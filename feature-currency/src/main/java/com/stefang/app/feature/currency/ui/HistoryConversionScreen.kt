@@ -11,22 +11,32 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stefang.app.core.ui.DeepPurple50
 import com.stefang.app.core.ui.MyApplicationTheme
 import com.stefang.app.core.ui.component.ScaffoldScreen
 import com.stefang.app.feature.currency.model.HistoryConversionUiModel
+import com.stefang.app.feature.currency.viewmodel.HistoryConversionViewModel
 
-typealias OnClickHistoryConversion = (amount: Double, code: String) -> Unit
+typealias OnClickHistoryConversion = (amount: Int, code: String) -> Unit
 
 @Composable
-fun HistoryConversionRoute() {
+fun HistoryConversionRoute(
+    viewModel: HistoryConversionViewModel = hiltViewModel()
+) {
+    val historiesState by viewModel.allHistories.collectAsStateWithLifecycle()
+
     HistoryConversionScreen(
-        histories = emptyList(),
-        onClick = { _, _ -> }
+        histories = historiesState,
+        onClick = { _, _ ->
+            // todo next version
+        }
     )
 }
 
@@ -74,8 +84,8 @@ private fun HistoryConversionItem(
                 color = DeepPurple50,
                 shape = RoundedCornerShape(8.dp)
             )
-            .padding(12.dp)
             .clickable { onClick(history.amount, history.currencyCode) }
+            .padding(12.dp)
     ) {
         Text(text = "Amount: " + history.amount.toString())
         Text(text = history.currencyName, fontWeight = FontWeight.SemiBold)
@@ -88,9 +98,9 @@ private fun DefaultPreview() {
     MyApplicationTheme {
         HistoryConversionScreen(
             histories = listOf(
-                HistoryConversionUiModel(100.0, "IDR", "Indonesia Rupiah"),
-                HistoryConversionUiModel(10.0, "IDR", "Indonesia Rupiah"),
-                HistoryConversionUiModel(900.0, "IDR", "Indonesia Rupiah"),
+                HistoryConversionUiModel(100, "IDR", "Indonesia Rupiah"),
+                HistoryConversionUiModel(10, "IDR", "Indonesia Rupiah"),
+                HistoryConversionUiModel(900, "IDR", "Indonesia Rupiah"),
             ),
             onClick = { _, _ -> }
         )

@@ -17,14 +17,16 @@
 package com.stefang.app.core.data.di
 
 import android.content.Context
-import com.stefang.app.core.data.CurrencyRepository
-import com.stefang.app.core.data.OfflineFirstCurrencyRepositoryImpl
+import com.stefang.app.core.data.repository.CurrencyRepository
+import com.stefang.app.core.data.repository.OfflineFirstCurrencyRepositoryImpl
 import com.stefang.app.core.data.datastore.ExchangeRateDataStore
 import com.stefang.app.core.data.datastore.ExchangeRateDataStoreImpl
 import com.stefang.app.core.data.date.TimeHelper
 import com.stefang.app.core.data.date.TimeHelperImpl
 import com.stefang.app.core.data.log.Logger
 import com.stefang.app.core.data.log.LoggerImpl
+import com.stefang.app.core.data.repository.HistoryRepository
+import com.stefang.app.core.data.repository.HistoryRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -42,6 +44,10 @@ interface DataModule {
     fun bindsCurrencyRepository(
         currencyRepository: OfflineFirstCurrencyRepositoryImpl
     ): CurrencyRepository
+
+    @Singleton
+    @Binds
+    fun bindsHistoryRepository(repository: HistoryRepositoryImpl): HistoryRepository
 
     @Singleton
     @Binds

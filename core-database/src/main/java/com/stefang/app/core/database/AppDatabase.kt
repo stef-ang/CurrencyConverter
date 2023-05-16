@@ -20,17 +20,23 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.stefang.app.core.database.dao.CurrencyDao
 import com.stefang.app.core.database.dao.ExchangeRatesDao
+import com.stefang.app.core.database.dao.HistoryDao
 import com.stefang.app.core.database.entity.CurrencyDbModel
-import com.stefang.app.core.database.entity.ExchangeRatesBdModel
+import com.stefang.app.core.database.entity.ExchangeRatesDbModel
+import com.stefang.app.core.database.entity.HistoryDbModel
 
 @Database(
     entities = [
         CurrencyDbModel::class,
-        ExchangeRatesBdModel::class
+        ExchangeRatesDbModel::class,
+        HistoryDbModel::class
     ],
-    version = 1
+    version = 3
 )
 abstract class AppDatabase : RoomDatabase() {
+
     abstract fun currencyDao(): CurrencyDao
     abstract fun exchangeRatesDao(): ExchangeRatesDao
+
+    abstract fun historyDao(): HistoryDao
 }
