@@ -45,13 +45,6 @@ fun MainNavigation() {
 
 fun NavHostController.navigateSingleTopTo(route: String) {
     this.navigate(route) {
-//        popUpTo(
-//            this@navigateSingleTopTo.graph.findStartDestination().id
-//        ) {
-//            saveState = true
-//        }
-        // Avoid multiple copies of the same destination when
-        // re-selecting the same item
         launchSingleTop = true
     }
 }
