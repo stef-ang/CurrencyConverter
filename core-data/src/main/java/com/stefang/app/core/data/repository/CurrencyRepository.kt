@@ -1,4 +1,4 @@
-package com.stefang.app.core.data
+package com.stefang.app.core.data.repository
 
 import com.stefang.app.core.data.model.CurrencyModel
 import com.stefang.app.core.data.model.CurrencyRateModel

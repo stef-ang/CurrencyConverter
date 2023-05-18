@@ -7,6 +7,6 @@ data class CurrencyUiModel(val code: String, val text: String) : AutoCompleteEnt
 
     override fun filter(query: String): Boolean {
         return text.lowercase(Locale.getDefault())
-            .startsWith(query.lowercase(Locale.getDefault()))
+            .contains(query.lowercase(Locale.getDefault()))
     }
 }

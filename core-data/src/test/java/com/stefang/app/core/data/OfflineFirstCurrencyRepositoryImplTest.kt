@@ -1,8 +1,9 @@
 package com.stefang.app.core.data
 
 import com.stefang.app.core.data.date.TimeHelper
+import com.stefang.app.core.data.repository.OfflineFirstCurrencyRepositoryImpl
 import com.stefang.app.core.database.entity.CurrencyDbModel
-import com.stefang.app.core.database.entity.ExchangeRatesBdModel
+import com.stefang.app.core.database.entity.ExchangeRatesDbModel
 import com.stefang.app.core.testing.datasource.TestCurrencyLocalDataSource
 import com.stefang.app.core.testing.datasource.TestCurrencyRemoteDataSource
 import com.stefang.app.core.testing.datasource.currenciesMap
@@ -149,8 +150,8 @@ val currenciesDbModelInput = listOf(
 )
 
 val ratesDbModelInput = listOf(
-    ExchangeRatesBdModel("CHF", "USD", 0.92006),
-    ExchangeRatesBdModel("BND", "USD", 1.348212),
-    ExchangeRatesBdModel("ABC", "USD", 3.0),
-    ExchangeRatesBdModel("USD", "USD", 1.0),
+    ExchangeRatesDbModel("CHF", "USD", 0.92006),
+    ExchangeRatesDbModel("BND", "USD", 1.348212),
+    ExchangeRatesDbModel("ABC", "USD", 3.0),
+    ExchangeRatesDbModel("USD", "USD", 1.0),
 )

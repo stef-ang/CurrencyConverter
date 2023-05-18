@@ -5,6 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "currency")
 data class CurrencyDbModel(
-    @PrimaryKey var code: String,
+    @PrimaryKey val code: String,
     val name: String
 )

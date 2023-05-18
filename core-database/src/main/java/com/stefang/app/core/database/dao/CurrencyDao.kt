@@ -13,6 +13,9 @@ interface CurrencyDao {
     @Query("SELECT * FROM currency order by code asc")
     fun getAll(): Flow<List<CurrencyDbModel>>
 
+    @Query("SELECT * FROM currency WHERE code = :code")
+    suspend fun getCurrencyByCode(code: String): CurrencyDbModel?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(currencies: List<CurrencyDbModel>)
 }
