@@ -23,6 +23,7 @@ Main Screen | AutoCompleteBox | History Screen
 - [Compose Navigation Component](https://developer.android.com/jetpack/compose/navigation) - For single-activity architecture with Compose.
 - [Retrofit](https://square.github.io/retrofit/) - A type-safe HTTP client for Android.
 - [Room](https://developer.android.com/training/data-storage/room) - Save data in a local database and support to Kotlin Extensions and Coroutines.
+- [LeakCanary](https://square.github.io/leakcanary) (Debug) - Memory leak detector.
 
 ## 📐 Architecture and Design Principles
 

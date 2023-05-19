@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HistoryDao {
 
-    @Query("SELECT * FROM history ORDER BY inserted_at DESC")
+    @Query("SELECT * FROM history ORDER BY created_at DESC")
     fun getAllHistories(): Flow<List<HistoryDbModel>>
 
     @Insert

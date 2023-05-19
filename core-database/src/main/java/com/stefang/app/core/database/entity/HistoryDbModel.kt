@@ -10,7 +10,7 @@ data class HistoryDbModel(
     val code: String,
     val name: String,
     val amount: Int,
-    @ColumnInfo(name = "inserted_at") val insertedAt: Long
+    @ColumnInfo(name = "created_at") val createdAt: Long
 ) {
     constructor(
         code: String,

@@ -16,6 +16,7 @@
 
 package com.stefang.app.core.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.stefang.app.core.database.dao.CurrencyDao
@@ -26,12 +27,16 @@ import com.stefang.app.core.database.entity.ExchangeRatesDbModel
 import com.stefang.app.core.database.entity.HistoryDbModel
 
 @Database(
+    exportSchema = true,
     entities = [
         CurrencyDbModel::class,
         ExchangeRatesDbModel::class,
         HistoryDbModel::class
     ],
-    version = 3
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2, spec = DatabaseMigrations.Schema1to2::class)
+    ]
 )
 abstract class AppDatabase : RoomDatabase() {
 
