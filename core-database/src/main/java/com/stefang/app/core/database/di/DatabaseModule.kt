@@ -18,8 +18,6 @@ package com.stefang.app.core.database.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.stefang.app.core.database.AppDatabase
 import com.stefang.app.core.database.dao.CurrencyDao
 import com.stefang.app.core.database.dao.ExchangeRatesDao
@@ -57,59 +55,11 @@ class DatabaseModule {
             appContext,
             AppDatabase::class.java,
             DB_NAME
-        ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     companion object {
         private const val DB_NAME = "converter-currency-db"
-
-        val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Create the new table
-                database.execSQL(
-                    """
-                    CREATE TABLE history (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                        code TEXT NOT NULL,
-                        name TEXT NOT NULL,
-                        rate REAL NOT NULL,
-                        inserted_at INTEGER NOT NULL
-                    )
-                    """.trimIndent()
-                )
-            }
-        }
-
-        val MIGRATION_2_3 = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Create new temporary table with the desired schema
-                database.execSQL(
-                    """
-                    CREATE TABLE history_new (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                        code TEXT NOT NULL,
-                        name TEXT NOT NULL,
-                        amount INTEGER NOT NULL,
-                        inserted_at INTEGER NOT NULL
-                    )
-                    """.trimIndent()
-                )
-
-                // Copy the data from the old table to the new one, converting 'rate' to an integer
-                database.execSQL(
-                    """
-                    INSERT INTO history_new (id, code, name, amount, inserted_at)
-                    SELECT id, code, name, CAST(rate AS INTEGER), inserted_at
-                    FROM history
-                    """.trimIndent()
-                )
-
-                // Remove the old table
-                database.execSQL("DROP TABLE history")
-
-                // Rename the new table to the old one
-                database.execSQL("ALTER TABLE history_new RENAME TO history")
-            }
-        }
     }
 }
