@@ -24,8 +24,6 @@ interface ApiModule {
 
     companion object {
 
-        private const val BASE_URL = "https://openexchangerates.org/api/"
-
         @Provides
         @Singleton
         fun okHttpCallFactory(): Call.Factory = OkHttpClient.Builder()
@@ -42,7 +40,7 @@ interface ApiModule {
         @Provides
         @Singleton
         fun provideRetrofit(okhttpCallFactory: Call.Factory): Retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.OPEN_EXCHANGE_API_URL)
             .callFactory(okhttpCallFactory)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
