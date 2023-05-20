@@ -15,8 +15,8 @@ Main Screen | AutoCompleteBox | History Screen
 ## 🦾 How to use
 
 - Generate your openexchangerates App ID [here](https://openexchangerates.org/account/app-ids).
-- Open `gradle.properties` file and put your openexchangerates as value of OpenExchangeApiKey.
-- OR open `local.properties` file and add `OpenExchangeApiKey="[app ids]"`
+- Open `gradle.properties` file and put your openexchangerates App ID as value of `OpenExchangeApiKey`.
+- OR open `local.properties` file and add `OpenExchangeApiKey="[your_app_id]"`
 
 ## 📚 Stacks
 
