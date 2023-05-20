@@ -8,15 +8,17 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
 }
 
-val localProperties = Properties().apply {
-    load(project.rootProject.file("local.properties").inputStream())
-}
-val gradleProperties = Properties().apply {
-    load(project.rootProject.file("gradle.properties").inputStream())
-}
+val localProperties = getProperties("local.properties")
+val gradleProperties = getProperties("gradle.properties")
 
 val apiKey = getValue("OpenExchangeApiKey")
 val apiUrl = getValue("OpenExchangeApiUrl")
+
+fun getProperties(name: String): Properties {
+    return Properties().apply {
+        load(project.rootProject.file(name).inputStream())
+    }
+}
 
 fun getValue(field: String): String {
     return localProperties.getProperty(field) ?: gradleProperties.getProperty(field) ?: ""
