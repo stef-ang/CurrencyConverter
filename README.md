@@ -2,7 +2,7 @@
 
 Simple Android app with Modern Android Development practice with openexchangerates api
 
-### ✨ Demo
+## ✨ Demo
 
 Main Screen | AutoCompleteBox | History Screen
 --- | --- | ---
@@ -11,6 +11,12 @@ Main Screen | AutoCompleteBox | History Screen
 - It calculates currency conversion from selected currency to all other currencies.
 - Every currency conversion calculation will be recorded as history conversion.
 - It support offline mode and to limit bandwidth, the app won't refetch remote data within 30 minutes.
+
+## 🦾 How to use
+
+- Generate your openexchangerates App ID [here](https://openexchangerates.org/account/app-ids).
+- Open `gradle.properties` file and put your openexchangerates as value of OpenExchangeApiKey.
+- OR open `local.properties` file and add `OpenExchangeApiKey="[app ids]"`
 
 ## 📚 Stacks
 
