@@ -10,6 +10,7 @@ Main Screen | AutoCompleteBox | History Screen
 
 - It calculates currency conversion from selected currency to all other currencies.
 - Every currency conversion calculation will be recorded as history conversion.
+  - User can delete the history
 - It support offline mode and to limit bandwidth, the app won't refetch remote data within 30 minutes.
 
 ## 🦾 How to use
