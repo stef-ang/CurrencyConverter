@@ -8,4 +8,6 @@ interface HistoryRepository {
     val histories: Flow<List<HistoryModel>>
 
     suspend fun trackHistory(code: String, amount: Int, trackerTime: Long)
+
+    suspend fun deleteHistory(id: Int)
 }

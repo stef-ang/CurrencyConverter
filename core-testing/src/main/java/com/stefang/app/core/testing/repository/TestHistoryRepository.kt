@@ -15,4 +15,6 @@ class TestHistoryRepository : HistoryRepository {
         get() = historiesFlow
 
     override suspend fun trackHistory(code: String, amount: Int, trackerTime: Long) {}
+
+    override suspend fun deleteHistory(id: Int) {}
 }

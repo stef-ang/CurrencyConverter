@@ -7,5 +7,7 @@ interface HistoryDataSource {
 
     fun getAllHistories(): Flow<List<HistoryDbModel>>
 
-    fun insertHistory(history: HistoryDbModel)
+    suspend fun insertHistory(history: HistoryDbModel)
+
+    suspend fun deleteHistory(id: Int)
 }

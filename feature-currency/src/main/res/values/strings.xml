@@ -2,4 +2,6 @@
 <resources>
     <string name="offline_mode_info">⚠️ You are in offline mode. There is networking issue</string>
     <string name="internal_error_info">⚠️ There is computation issue, please try again later</string>
+
+    <string name="delete_history_success">History has been deleted</string>
 </resources>

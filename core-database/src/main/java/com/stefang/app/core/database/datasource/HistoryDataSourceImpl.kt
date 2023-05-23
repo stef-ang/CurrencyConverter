@@ -13,7 +13,11 @@ class HistoryDataSourceImpl @Inject constructor(
         return historyDao.getAllHistories()
     }
 
-    override fun insertHistory(history: HistoryDbModel) {
+    override suspend fun insertHistory(history: HistoryDbModel) {
         historyDao.insertHistory(history)
+    }
+
+    override suspend fun deleteHistory(id: Int) {
+        historyDao.deleteById(id)
     }
 }
