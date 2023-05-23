@@ -13,5 +13,8 @@ interface HistoryDao {
     fun getAllHistories(): Flow<List<HistoryDbModel>>
 
     @Insert
-    fun insertHistory(history: HistoryDbModel)
+    suspend fun insertHistory(history: HistoryDbModel)
+
+    @Query("DELETE FROM history WHERE id = :id")
+    suspend fun deleteById(id: Int)
 }

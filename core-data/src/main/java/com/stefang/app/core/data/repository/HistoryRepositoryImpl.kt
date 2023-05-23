@@ -32,4 +32,8 @@ class HistoryRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun deleteHistory(id: Int): Unit = withContext(Dispatchers.IO) {
+        historyDataSource.deleteHistory(id)
+    }
 }
