@@ -6,7 +6,7 @@ Simple Android app with Modern Android Development practice with openexchangerat
 
 Main Screen | AutoCompleteBox | History Screen
 --- | --- | ---
-<img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/ff7ff113-f173-47bf-960f-071588623846" width="250" /> | <img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/28a23f88-7371-470a-8207-4dc98ebb86fe" width="250" /> | <img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/d205dfee-e23f-4174-a51f-ea2086ab243d" width="250" />
+<img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/ff7ff113-f173-47bf-960f-071588623846" width="250" /> | <img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/28a23f88-7371-470a-8207-4dc98ebb86fe" width="250" /> | <img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/11b2e1f5-0c41-4ad3-99ab-fcfa7773c857" width="250" />
 
 - It calculates currency conversion from selected currency to all other currencies.
 - Every currency conversion calculation will be recorded as history conversion.
@@ -39,7 +39,7 @@ Thanks to [this architecture-template repository](https://github.com/android/arc
 
 ## ☑️ TODO
 
-- [ ] Delete history
+- [ ] Delete history v2
 - [ ] Click history to load the conversion
 - [ ] Pagination in history screen
 - [ ] Integration Test
