@@ -9,6 +9,7 @@ import com.stefang.app.feature.currency.model.CurrencyUiModel
 import com.stefang.app.feature.currency.model.ExchangeResultUiModel
 import com.stefang.app.feature.currency.usecase.GetAllCurrenciesUseCase
 import com.stefang.app.feature.currency.usecase.GetAllExchangeResultsUseCase
+import com.stefang.app.feature.currency.utils.AppDispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -22,17 +23,19 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CurrencyConverterViewModel @Inject constructor(
-    currencyRepository: CurrencyRepository,
+    private val currencyRepository: CurrencyRepository,
     getAllCurrenciesUseCase: GetAllCurrenciesUseCase,
     getAllExchangeResultsUseCase: GetAllExchangeResultsUseCase,
     private val logger: Logger,
-    private val historyRepository: HistoryRepository
+    private val historyRepository: HistoryRepository,
+    private val appDispatchers: AppDispatchers
 ) : ViewModel() {
 
     private var job: Job? = null
@@ -49,7 +52,7 @@ class CurrencyConverterViewModel @Inject constructor(
     private val trackHistorySharedFlow = MutableSharedFlow<Pair<String, Int>>()
     val trackHistoryEvent: SharedFlow<Pair<String, Int>> = trackHistorySharedFlow
 
-    init {
+    private fun fetchCurrenciesAndRates() {
         viewModelScope.launch {
             try {
                 currencyRepository.tryUpdateCurrenciesAndRates()
@@ -63,6 +66,8 @@ class CurrencyConverterViewModel @Inject constructor(
     val allCurrencies: StateFlow<List<CurrencyUiModel>> = getAllCurrenciesUseCase().catch {
         snackBarEventSharedFlow.emit(SnackBarEvent.ComputationError)
         emit(emptyList())
+    }.onStart {
+        fetchCurrenciesAndRates()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -97,7 +102,7 @@ class CurrencyConverterViewModel @Inject constructor(
 
     fun trackHistory(code: String, amount: Int) {
         job?.cancel()
-        job = viewModelScope.launch {
+        job = viewModelScope.launch(appDispatchers.io) {
             // delay for 2 seconds before track the history
             delay(TRACKER_DELAY)
             historyRepository.trackHistory(code, amount, System.currentTimeMillis())
