@@ -4,4 +4,5 @@
     <string name="internal_error_info">⚠️ There is computation issue, please try again later</string>
 
     <string name="delete_history_success">History has been deleted</string>
+    <string name="delete_all_history_success">All Histories have been deleted</string>
 </resources>

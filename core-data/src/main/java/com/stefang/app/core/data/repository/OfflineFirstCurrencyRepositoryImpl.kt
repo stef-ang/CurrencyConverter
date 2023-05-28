@@ -11,9 +11,7 @@ import com.stefang.app.core.database.datasource.CurrencyLocalDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -48,16 +46,14 @@ class OfflineFirstCurrencyRepositoryImpl @Inject constructor(
 
     override suspend fun tryUpdateCurrenciesAndRates(): Unit = withContext(Dispatchers.IO) {
         if (isLocalDataNotValid()) {
-            coroutineScope {
-                val deferredCurrencies = async { remoteDataSource.getCurrencies() }
-                val deferredRates = async { remoteDataSource.getLatestExchangeRate() }
+            val deferredCurrencies = async { remoteDataSource.getCurrencies() }
+            val deferredRates = async { remoteDataSource.getLatestExchangeRate() }
 
-                localDataSource.saveCurrencies(deferredCurrencies.await().toDbModel())
-                val exchangeRate = deferredRates.await()
-                localDataSource.saveExchangeRates(exchangeRate.toDbModel())
-                dataStore.setLastUpdate(timeHelper.currentTimeMillis)
-                dataStore.setLatestBase(exchangeRate.base)
-            }
+            localDataSource.saveCurrencies(deferredCurrencies.await().toDbModel())
+            val exchangeRate = deferredRates.await()
+            localDataSource.saveExchangeRates(exchangeRate.toDbModel())
+            dataStore.setLastUpdate(timeHelper.currentTimeMillis)
+            dataStore.setLatestBase(exchangeRate.base)
         }
     }
 

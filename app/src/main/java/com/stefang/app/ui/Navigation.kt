@@ -39,7 +39,9 @@ fun MainNavigation() {
                 }
             )
         }
-        composable("history") { HistoryConversionRoute() }
+        composable("history") {
+            HistoryConversionRoute()
+        }
     }
 }
 

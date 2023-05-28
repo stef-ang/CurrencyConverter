@@ -42,4 +42,7 @@ dependencies {
     implementation(libs.androidx.test.runner)
     implementation(libs.hilt.android.testing)
     implementation(libs.kotlinx.coroutines.test)
+
+    api(libs.mockk)
+    api(kotlin("test"))
 }
