@@ -17,4 +17,6 @@ class TestHistoryRepository : HistoryRepository {
     override suspend fun trackHistory(code: String, amount: Int, trackerTime: Long) {}
 
     override suspend fun deleteHistory(id: Int) {}
+
+    override suspend fun deleteAllHistory() {}
 }

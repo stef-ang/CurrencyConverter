@@ -17,23 +17,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -45,74 +43,102 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stefang.app.core.ui.DeepPurple50
 import com.stefang.app.core.ui.DeepPurple500
 import com.stefang.app.core.ui.MyApplicationTheme
-import com.stefang.app.core.ui.component.ScaffoldScreen
+import com.stefang.app.core.ui.component.DefaultTopAppBar
 import com.stefang.app.core.ui.component.SimpleBulleted
 import com.stefang.app.feature.currency.R
 import com.stefang.app.feature.currency.model.HistoryConversionUiModel
 import com.stefang.app.feature.currency.viewmodel.HistoryConversionViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 typealias OnClickHistoryConversion = (amount: Int, code: String) -> Unit
 typealias OnDeleteHistoryConversion = (id: Int) -> Unit
+typealias BottomSheetStateTo = (Boolean) -> Unit
 
 @Composable
 fun HistoryConversionRoute(
     viewModel: HistoryConversionViewModel = hiltViewModel()
 ) {
     val historiesState by viewModel.allHistories.collectAsStateWithLifecycle()
+    val showBottomSheet by viewModel.showBottomSheetEvent.collectAsStateWithLifecycle(initialValue = false)
 
-    val snackBarHostState = remember { SnackbarHostState() }
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberModalBottomSheetState()
+    )
+    val scope = rememberCoroutineScope()
 
     val messageDeleteHistorySuccess = stringResource(R.string.delete_history_success)
+    val messageDeleteAllHistorySuccess = stringResource(R.string.delete_all_history_success)
 
     LaunchedEffect(Unit) {
         viewModel.snackBarEvent.collect {
-            if (it) {
-                snackBarHostState.showSnackbar(
-                    message = messageDeleteHistorySuccess,
-                    duration = SnackbarDuration.Short
-                )
+            val message = when (it) {
+                is HistoryConversionViewModel.SnackBarEvent.DeleteSingle -> messageDeleteHistorySuccess
+                is HistoryConversionViewModel.SnackBarEvent.DeleteAll -> messageDeleteAllHistorySuccess
+            }
+            scaffoldState.snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+
+    LaunchedEffect(showBottomSheet) {
+        scope.launch {
+            if (showBottomSheet) {
+                scaffoldState.bottomSheetState.show()
+            } else if (scaffoldState.bottomSheetState.isVisible) {
+                scaffoldState.bottomSheetState.hide()
             }
         }
     }
 
     HistoryConversionScreen(
+        scaffoldState = scaffoldState,
         histories = historiesState,
         onClick = { _, _ ->
             // todo next version
         },
         onDelete = viewModel::deleteHistory,
-        snackBarHostState = snackBarHostState
+        bottomSheetStateTo = viewModel::bottomSheetStateTo
     )
 }
 
 @Composable
 fun HistoryConversionScreen(
+    scaffoldState: BottomSheetScaffoldState,
     histories: List<HistoryConversionUiModel>,
     onClick: OnClickHistoryConversion,
     onDelete: OnDeleteHistoryConversion,
-    snackBarHostState: SnackbarHostState?
+    bottomSheetStateTo: BottomSheetStateTo,
 ) {
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
 
-    ScaffoldScreen(
-        title = "History",
-        actions = {
-            Icon(
-                imageVector = Icons.Outlined.Info,
-                contentDescription = "history",
-                tint = DeepPurple500,
-                modifier = Modifier.clickable {
-                    scope.launch { sheetState.show() }.invokeOnCompletion {
-                        showBottomSheet = true
-                    }
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            DefaultTopAppBar(
+                title = "History",
+                actions = {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = "history",
+                        tint = DeepPurple500,
+                        modifier = Modifier.clickable {
+                            bottomSheetStateTo(true)
+//                    scope.launch { sheetState.show() }.invokeOnCompletion {
+//                        showBottomSheet = true
+//                    }
+                        }
+                    )
                 }
             )
         },
-        snackBarHostState = snackBarHostState,
+        snackbarHost = { SnackbarHost(scaffoldState.snackbarHostState) },
+        sheetContent = {
+            HistoryModalBottomSheet {
+                bottomSheetStateTo(false)
+//                showBottomSheet = false
+            }
+        },
         content = {
             Column(modifier = Modifier.padding(start = 16.dp, top = it.calculateTopPadding(), end = 16.dp)) {
                 HistoryConversionList(
@@ -121,78 +147,69 @@ fun HistoryConversionScreen(
                     onDelete
                 )
             }
-
-            HistoryModalBottomSheet(
-                sheetState = sheetState,
-                scope = scope,
-                showBottomSheet = showBottomSheet
-            ) {
-                showBottomSheet = false
-            }
         }
     )
 }
 
 @Composable
 private fun HistoryModalBottomSheet(
-    sheetState: SheetState,
-    scope: CoroutineScope,
-    showBottomSheet: Boolean,
     onDismiss: () -> Unit
 ) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp),
+            text = "Information",
+            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.headlineSmall
+        )
 
-    if (showBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            sheetState = sheetState
+        val informations = listOf(
+            "Every calculation is recorded here.",
+            "Click history to load the calculation. (soon)",
+            "Swipe left/right to delete the history."
+        )
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 16.dp),
-                    text = "Information",
-                    fontWeight = FontWeight.SemiBold,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                val informations = listOf(
-                    "Every calculation is recorded here.",
-                    "Click history to load the calculation. (soon)",
-                    "Swipe left/right to delete the history."
-                )
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(informations) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            SimpleBulleted()
-                            Text(text = it)
-                        }
-                    }
-                }
-
-                // Sheet content
-                Button(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(16.dp),
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                onDismiss()
-                            }
-                        }
-                    }) {
-                    Text("OK")
+            items(informations) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    SimpleBulleted()
+                    Text(text = it)
                 }
             }
         }
+
+        // Sheet content
+        Button(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(16.dp),
+            onClick = {
+                onDismiss()
+//                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                            if (!sheetState.isVisible) {
+//                                onDismiss()
+//                            }
+//                        }
+            }) {
+            Text("OK")
+        }
     }
+
+//    if (showBottomSheet) {
+//        ModalBottomSheet(
+//            onDismissRequest = onDismiss,
+//            sheetState = sheetState
+//        ) {
+//
+//        }
+//    }
 }
 
 @Composable
@@ -246,6 +263,7 @@ private fun HistoryConversionItem(
 private fun DefaultPreview() {
     MyApplicationTheme {
         HistoryConversionScreen(
+            scaffoldState = rememberBottomSheetScaffoldState(),
             histories = listOf(
                 HistoryConversionUiModel(1, 100, "IDR", "Indonesia Rupiah"),
                 HistoryConversionUiModel(2, 10, "IDR", "Indonesia Rupiah"),
@@ -253,7 +271,7 @@ private fun DefaultPreview() {
             ),
             onClick = { _, _ -> },
             onDelete = {},
-            snackBarHostState = null
+            bottomSheetStateTo = {}
         )
     }
 }
