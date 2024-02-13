@@ -10,4 +10,6 @@ interface HistoryDataSource {
     suspend fun insertHistory(history: HistoryDbModel)
 
     suspend fun deleteHistory(id: Int)
+
+    suspend fun deleteAllHistory()
 }

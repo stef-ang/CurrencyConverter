@@ -9,6 +9,7 @@ import com.stefang.app.feature.currency.model.CurrencyUiModel
 import com.stefang.app.feature.currency.model.ExchangeResultUiModel
 import com.stefang.app.feature.currency.usecase.GetAllCurrenciesUseCase
 import com.stefang.app.feature.currency.usecase.GetAllExchangeResultsUseCase
+import com.stefang.app.feature.currency.utils.AppDispatchers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -32,7 +33,8 @@ class CurrencyConverterViewModel @Inject constructor(
     getAllCurrenciesUseCase: GetAllCurrenciesUseCase,
     getAllExchangeResultsUseCase: GetAllExchangeResultsUseCase,
     private val logger: Logger,
-    private val historyRepository: HistoryRepository
+    private val historyRepository: HistoryRepository,
+    private val appDispatchers: AppDispatchers
 ) : ViewModel() {
 
     private var job: Job? = null
@@ -50,7 +52,7 @@ class CurrencyConverterViewModel @Inject constructor(
     val trackHistoryEvent: SharedFlow<Pair<String, Int>> = trackHistorySharedFlow
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(appDispatchers.io) {
             try {
                 currencyRepository.tryUpdateCurrenciesAndRates()
             } catch (e: Exception) {
@@ -97,7 +99,7 @@ class CurrencyConverterViewModel @Inject constructor(
 
     fun trackHistory(code: String, amount: Int) {
         job?.cancel()
-        job = viewModelScope.launch {
+        job = viewModelScope.launch(appDispatchers.io) {
             // delay for 2 seconds before track the history
             delay(TRACKER_DELAY)
             historyRepository.trackHistory(code, amount, System.currentTimeMillis())
