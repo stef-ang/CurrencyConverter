@@ -6,7 +6,7 @@ Simple Android app with Modern Android Development practice with openexchangerat
 
 Main Screen | AutoCompleteBox | History Screen
 --- | --- | ---
-<img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/ff7ff113-f173-47bf-960f-071588623846" width="250" /> | <img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/28a23f88-7371-470a-8207-4dc98ebb86fe" width="250" /> | <img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/11b2e1f5-0c41-4ad3-99ab-fcfa7773c857" width="250" />
+<img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/ff7ff113-f173-47bf-960f-071588623846" width="250" /> | <img src="https://github.com/stef-ang/CurrencyConverter/assets/6779288/28a23f88-7371-470a-8207-4dc98ebb86fe" width="250" /> | <img src="https://github.com/user-attachments/assets/2f90c639-3259-4097-80dd-7c3211f12826" width="250" />
 
 - It calculates currency conversion from selected currency to all other currencies.
 - Every currency conversion calculation will be recorded as history conversion.
@@ -39,7 +39,7 @@ Thanks to [this architecture-template repository](https://github.com/android/arc
 
 ## ☑️ TODO
 
-- [ ] Delete history v2
+- [x] Delete history v2
 - [ ] Click history to load the conversion
 - [ ] Pagination in history screen
 - [ ] Integration Test
@@ -49,8 +49,8 @@ Thanks to [this architecture-template repository](https://github.com/android/arc
 
 👤 **Stefanus Anggara**
 
-* Twitter: <a href="https://twitter.com/Stef_Anggara" target="_blank"><img alt="Twitter: Stef_Anggara" src="https://img.shields.io/twitter/follow/Stef_Anggara.svg?style=social" /></a>
 * Email: anggara.stefanus@gmail.com
+* Linkedin: https://www.linkedin.com/in/stefanus-anggara-132b6488/
 
 Feel free to ping me 😉
 
