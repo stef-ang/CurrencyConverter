@@ -25,11 +25,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = rootProject.extra["javaVersion"] as JavaVersion
+        targetCompatibility = rootProject.extra["javaVersion"] as JavaVersion
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = rootProject.extra["kotlinJvmTarget"] as String
     }
 }
 
@@ -42,4 +42,7 @@ dependencies {
     implementation(libs.androidx.test.runner)
     implementation(libs.hilt.android.testing)
     implementation(libs.kotlinx.coroutines.test)
+
+    api(libs.mockito)
+    api(kotlin("test"))
 }

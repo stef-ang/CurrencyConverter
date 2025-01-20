@@ -20,4 +20,8 @@ class HistoryDataSourceImpl @Inject constructor(
     override suspend fun deleteHistory(id: Int) {
         historyDao.deleteById(id)
     }
+
+    override suspend fun deleteAllHistory() {
+        historyDao.deleteAll()
+    }
 }

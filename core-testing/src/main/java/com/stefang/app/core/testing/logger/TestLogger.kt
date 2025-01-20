@@ -4,7 +4,11 @@ import com.stefang.app.core.data.log.Logger
 
 class TestLogger: Logger {
 
-    override fun error(e: Exception, message: String) {}
+    var onErrorCalled = false
 
-    override fun debug(message: String) {}
+    var onDebugCalled = false
+
+    override fun error(e: Exception, message: String) { onErrorCalled = true }
+
+    override fun debug(message: String) { onDebugCalled = true }
 }

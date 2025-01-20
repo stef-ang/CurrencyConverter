@@ -15,3 +15,5 @@
  */
 
 // Root build.gradle.kts
+extra["javaVersion"] = JavaVersion.VERSION_17
+extra["kotlinJvmTarget"] = "17"

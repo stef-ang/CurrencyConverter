@@ -22,8 +22,11 @@ class HistoryConversionViewModel @Inject constructor(
     private val logger: Logger
 ): ViewModel() {
 
-    private val snackBarEventSharedFlow = MutableSharedFlow<Boolean>()
-    val snackBarEvent: SharedFlow<Boolean> = snackBarEventSharedFlow
+    private val snackBarEventSharedFlow = MutableSharedFlow<SnackBarEvent>()
+    val snackBarEvent: SharedFlow<SnackBarEvent> = snackBarEventSharedFlow
+
+    private val showBottomSheetSharedFlow = MutableSharedFlow<Boolean>()
+    val showBottomSheetEvent: SharedFlow<Boolean> = showBottomSheetSharedFlow
 
     val allHistories: StateFlow<List<HistoryConversionUiModel>> = historyRepository.histories.catch {
         emit(emptyList())
@@ -38,9 +41,24 @@ class HistoryConversionViewModel @Inject constructor(
     fun deleteHistory(id: Int) = viewModelScope.launch {
         try {
             historyRepository.deleteHistory(id)
-            snackBarEventSharedFlow.emit(true)
+            snackBarEventSharedFlow.emit(SnackBarEvent.DeleteSingle)
         } catch (e: Exception) {
             logger.error(e)
         }
+    }
+
+    fun deleteAllHistory() = viewModelScope.launch {
+        try {
+            historyRepository.deleteAllHistory()
+            showBottomSheetSharedFlow.emit(false)
+            snackBarEventSharedFlow.emit(SnackBarEvent.DeleteAll)
+        } catch (e: Exception) {
+            logger.error(e)
+        }
+    }
+
+    sealed interface SnackBarEvent {
+        object DeleteSingle: SnackBarEvent
+        object DeleteAll: SnackBarEvent
     }
 }

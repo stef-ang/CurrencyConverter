@@ -10,4 +10,6 @@ interface HistoryRepository {
     suspend fun trackHistory(code: String, amount: Int, trackerTime: Long)
 
     suspend fun deleteHistory(id: Int)
+
+    suspend fun deleteAllHistory()
 }
